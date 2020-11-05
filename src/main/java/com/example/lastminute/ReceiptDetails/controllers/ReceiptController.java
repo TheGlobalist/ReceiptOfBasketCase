@@ -2,44 +2,47 @@ package com.example.lastminute.ReceiptDetails.controllers;
 
 
 import com.example.lastminute.ReceiptDetails.exceptions.IncorrectFormatException;
-import com.example.lastminute.ReceiptDetails.model.Item;
+import com.example.lastminute.ReceiptDetails.model.Product;
+import com.example.lastminute.ReceiptDetails.model.ResponseMessage;
 import com.example.lastminute.ReceiptDetails.model.ShoppingCart;
-import com.example.lastminute.ReceiptDetails.service.ItemService;
+import com.example.lastminute.ReceiptDetails.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/receipt")
 public class ReceiptController {
 
-    @Value("${basic.tax}")
-    private Double basicTax;
-
-    @Value("${import.tax}")
-    private Double importTax;
 
     @Autowired
-    private ItemService itemServiceImpl;
+    private ProductService productServiceImpl;
 
     @PostMapping(value="/produce")
-    public String test(@RequestBody ShoppingCart cartFromInput) {
-        List<Item> cartItems = new ArrayList<>();
+    public ResponseMessage test(@RequestBody ShoppingCart cartFromInput) {
+        List<Product> cartItems = new ArrayList<>();
         try {
-            for (String cartItem : cartFromInput.getCart()) {
-                cartItems.addAll(itemServiceImpl.generateItems(cartItem));
+            var iterator = cartFromInput.getCart().iterator();
+            while (iterator.hasNext()) {
+                String cartItem = iterator.next();
+                cartItems.add(productServiceImpl.generateItem(cartItem));
             }
         } catch (IncorrectFormatException ex) {
-            return ex.getMessage();
+            return ResponseMessage.newBuilder()
+                    .statusCode(500)
+                    .message("An error occurred!")
+                    .data(ex.getMessage())
+                    .build();
         }
-        return "ciao";
+        String receipt = productServiceImpl.generateReceipt(cartItems);
+        return ResponseMessage.newBuilder()
+                .statusCode(200)
+                .message("Receipt successfully built!")
+                .data(receipt)
+                .build();
     }
 
 }

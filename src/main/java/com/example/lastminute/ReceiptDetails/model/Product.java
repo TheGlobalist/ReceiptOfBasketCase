@@ -3,15 +3,15 @@ package com.example.lastminute.ReceiptDetails.model;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.stream.Stream;
+
 @Builder(builderMethodName = "newBuilder")
 @Getter
-public class Item {
+public class Product {
 
     private String name;
     private Double price;
-    private Boolean isProductTaxFree;
-    private Boolean hasProductBeenImported;
-
-
+    private Integer quantity;
+    private Boolean isProductImported;
 
 }
