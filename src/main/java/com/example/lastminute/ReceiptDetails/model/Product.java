@@ -3,7 +3,6 @@ package com.example.lastminute.ReceiptDetails.model;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.stream.Stream;
 
 @Builder(builderMethodName = "newBuilder")
 @Getter
