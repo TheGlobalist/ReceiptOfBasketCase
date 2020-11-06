@@ -6,8 +6,11 @@ import com.example.lastminute.ReceiptDetails.model.Product;
 import com.example.lastminute.ReceiptDetails.model.ResponseMessage;
 import com.example.lastminute.ReceiptDetails.model.ShoppingCart;
 import com.example.lastminute.ReceiptDetails.service.ProductService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -22,7 +25,8 @@ public class ReceiptController {
     private ProductService productServiceImpl;
 
     @PostMapping(value="/produce")
-    public ResponseMessage test(@RequestBody ShoppingCart cartFromInput) {
+    public ResponseEntity<ResponseMessage> test(@RequestBody ShoppingCart cartFromInput) {
+        ResponseEntity<ResponseMessage> toReturn = null;
         List<Product> cartItems = new ArrayList<>();
         try {
             var iterator = cartFromInput.getCart().iterator();
@@ -31,18 +35,24 @@ public class ReceiptController {
                 cartItems.add(productServiceImpl.generateItem(cartItem));
             }
         } catch (IncorrectFormatException ex) {
-            return ResponseMessage.newBuilder()
-                    .statusCode(500)
-                    .message("An error occurred!")
-                    .data(ex.getMessage())
-                    .build();
+            toReturn = new ResponseEntity<>(
+                    ResponseMessage.newBuilder()
+                            .statusCode(500)
+                            .message("An error occurred!")
+                            .data(ex.getMessage())
+                            .build(), HttpStatus.INTERNAL_SERVER_ERROR
+            );
+            return toReturn;
         }
         String receipt = productServiceImpl.generateReceipt(cartItems);
-        return ResponseMessage.newBuilder()
-                .statusCode(200)
-                .message("Receipt successfully built!")
-                .data(receipt)
-                .build();
+        toReturn = new ResponseEntity<>(
+                ResponseMessage.newBuilder()
+                        .statusCode(200)
+                        .message("Receipt successfully built!")
+                        .data(receipt)
+                        .build(), HttpStatus.OK
+        );
+        return toReturn;
     }
 
 }

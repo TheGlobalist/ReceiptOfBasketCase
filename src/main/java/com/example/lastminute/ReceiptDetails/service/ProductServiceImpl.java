@@ -67,7 +67,7 @@ public class ProductServiceImpl implements ProductService {
             totalPriceTaxFree += currentProduct.getPrice();
             toReturn += String.format(Locale.US, "%d %s: %.2f\n", currentProduct.getQuantity(), currentProduct.getName(), costOfProduct);
         }
-        toReturn += String.format(Locale.US, "Sales Tax: %.2f\nTotal: %.2f", totalSalesTax, (totalPriceTaxFree+totalSalesTax));
+        toReturn += String.format(Locale.US, "Sales Taxes: %.2f\nTotal: %.2f", totalSalesTax, (totalPriceTaxFree+totalSalesTax));
         return toReturn;
     }
 }

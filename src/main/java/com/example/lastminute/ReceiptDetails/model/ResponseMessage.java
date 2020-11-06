@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Builder(builderMethodName = "newBuilder")
+@Getter
 public class ResponseMessage {
 
     private Integer statusCode;
