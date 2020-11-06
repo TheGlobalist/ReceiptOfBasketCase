@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 public class ResponseMessage {
 
+    //prova per travisci
     private Integer statusCode;
     private String message;
     private Object data;
