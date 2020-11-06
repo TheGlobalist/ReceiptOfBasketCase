@@ -51,6 +51,47 @@ public class ReceiptControllerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @Test
+    public void testReceiptTwo() {
+        List<String> cart  = Arrays.asList("1 imported box of chocolates at 10.00",
+                "1 imported bottle of perfume at 47.50"
+        );
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setCart(cart);
+        try {
+            mvc.perform(
+                    post("/receipt/produce")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(shoppingCart))
+            ).andExpect(status().is2xxSuccessful())
+                    .andExpect(jsonPath("$.data", is("1 imported box of chocolates: 10.50\n1 imported bottle of perfume: 54.65\nSales Taxes: 7.65\nTotal: 65.15")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testReceiptThree() {
+        List<String> cart  = Arrays.asList("1 imported bottle of perfume at 27.99",
+                "1 bottle of perfume at 18.99",
+                "1 packet of headache pills at 9.75",
+                "1 imported box of chocolates at 11.25"
+        );
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setCart(cart);
+        try {
+            mvc.perform(
+                    post("/receipt/produce")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsBytes(shoppingCart))
+            ).andExpect(status().is2xxSuccessful())
+            .andExpect(jsonPath("$.data", is("1 imported bottle of perfume: 32.19\n1 bottle of perfume: 20.89\n1 packet of headache pills: 9.75\n1 imported box of chocolates: 11.85\nSales Taxes: 6.70\nTotal: 74.68")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
