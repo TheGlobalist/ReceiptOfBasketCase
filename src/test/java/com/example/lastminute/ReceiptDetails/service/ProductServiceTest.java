@@ -12,8 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,8 +29,8 @@ public class ProductServiceTest {
         } catch (IncorrectFormatException ex) {
             Assert.fail(ex.getMessage());
         }
-        assertEquals(toCheck.getPrice(),12.49);
-        assertEquals(toCheck.getQuantity(),1 );
+        assertEquals(12.49, toCheck.getPrice(), 0.0);
+        assertEquals(1,toCheck.getQuantity() , 0);
         assertEquals(toCheck.getIsProductImported(), false);
     }
 
@@ -44,8 +43,8 @@ public class ProductServiceTest {
             Assert.fail(ex.getMessage());
         }
         assertEquals(toCheck.getName(),"imported bottle of perfume");
-        assertEquals(toCheck.getPrice(),27.99);
-        assertEquals(toCheck.getQuantity(),1 );
+        assertEquals(27.99,toCheck.getPrice(), 0);
+        assertEquals(1, toCheck.getQuantity(), 0);
         assertEquals(toCheck.getIsProductImported(), true);;
     }
 
